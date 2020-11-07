@@ -1,0 +1,36 @@
+filebeat.inputs:
+- type: container
+  enabled: false
+  paths:
+    -  "/var/lib/docker/containers/*/*.log"
+    #stream: "stdout"
+    #ids:
+    #  - "*"
+  exclude_files: ['\.gz$']
+#  ignore_older: 10m
+  processors:
+   - add_docker_metadata:
+       host: "unix:///var/run/docker.sock"
+
+    #filebeat.config.modules:
+    #path: ${path.config}/modules.d/*.yml
+    #reload.enabled: false
+
+
+- type: log
+  enabled: true
+  paths:
+    -  "/var/log/custom/*.log"
+    #stream: "stdout"
+    #ids:
+    #  - "*"
+  exclude_files: ['\.gz$']
+#  ignore_older: 10m
+
+
+
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: '${"localhost:9200"}'
+  username: "elastic"
+  password: "changeme"
